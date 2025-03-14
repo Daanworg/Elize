@@ -1,3 +1,15 @@
-# Google Code CLI
+# Test App
 
-A command line interface tool similar to Claude Code, but using Google's Gemini models instead of Claude. This tool helps developers with various coding tasks by providing an AI-powered assistant directly in the terminal.
+A simple test application demonstrating basic math operations with Jest testing.
+
+## Installation
+
+```bash
+npm install
+```
+
+## Running Tests
+
+```bash
+npm test
+```

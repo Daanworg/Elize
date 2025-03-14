@@ -1,14 +1,14 @@
 {
-  "name": "google-code-cli",
-  "version": "0.1.0",
-  "description": "A Claude Code-like CLI tool powered by Google's Gemini models",
-  "main": "bin/cli.js",
+  "name": "elize",
+  "version": "1.0.0",
+  "description": "A test application",
+  "main": "src/index.js",
   "bin": {
     "google-code": "./bin/cli.js"
   },
   "scripts": {
-    "start": "node bin/cli.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/app.js",
+    "test": "jest",
     "postinstall": "echo \"Remember to set GOOGLE_APPLICATION_CREDENTIALS and GOOGLE_PROJECT_ID\""
   },
   "keywords": [
@@ -26,7 +26,12 @@
     "chalk": "^4.1.2",
     "cli-highlight": "^2.1.11",
     "commander": "^11.1.0",
-    "glob": "^10.3.10"
+    "glob": "^10.3.10",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3"
   },
   "engines": {
     "node": ">=16.0.0"
