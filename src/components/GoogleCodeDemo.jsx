@@ -23,13 +23,13 @@ const THINKING_MODES = {
 };
 
 const TOOLS = {
-  searchFiles: { icon: Search, color: 'text-blue-400' },
-  readFile: { icon: FileText, color: 'text-green-400' },
-  writeFile: { icon: Edit3, color: 'text-yellow-400' },
-  executeCommand: { icon: TerminalIcon, color: 'text-purple-400' },
-  git: { icon: Git, color: 'text-orange-400' },
-  analyze: { icon: Code, color: 'text-cyan-400' },
-  config: { icon: Settings, color: 'text-gray-400' }
+  searchFiles: { icon: Search, color: 'text-blue-400', requiresPermission: false },
+  readFile: { icon: FileText, color: 'text-green-400', requiresPermission: false },
+  writeFile: { icon: Edit3, color: 'text-yellow-400', requiresPermission: true },
+  executeCommand: { icon: TerminalIcon, color: 'text-purple-400', requiresPermission: true },
+  git: { icon: Git, color: 'text-orange-400', requiresPermission: true },
+  analyze: { icon: Code, color: 'text-cyan-400', requiresPermission: false },
+  config: { icon: Settings, color: 'text-gray-400', requiresPermission: false }
 };
 
 const GoogleCodeDemo = () => {
@@ -47,6 +47,11 @@ const GoogleCodeDemo = () => {
     model: 'claude-3.7-sonnet',
     contextWindow: 200000,
     maxTokens: 4096
+  });
+  const [permissions, setPermissions] = useState({
+    writeFile: false,
+    executeCommand: false,
+    git: false
   });
   const messagesEndRef = useRef(null);
 
@@ -83,7 +88,29 @@ const GoogleCodeDemo = () => {
     return false;
   };
 
-  const executeTool = (toolName, args) => {
+  const executeTool = async (toolName, args) => {
+    if (!TOOLS[toolName]) {
+      setMessages(prev => [...prev, {
+        role: 'system',
+        content: `Error: Unknown tool "${toolName}"`,
+        metadata: { type: 'error' }
+      }]);
+      return;
+    }
+
+    if (TOOLS[toolName].requiresPermission && !permissions[toolName]) {
+      const confirmed = window.confirm(`Grant permission to use ${toolName} tool?`);
+      if (!confirmed) {
+        setMessages(prev => [...prev, {
+          role: 'system',
+          content: `Permission denied for ${toolName}`,
+          metadata: { type: 'error' }
+        }]);
+        return;
+      }
+      setPermissions(prev => ({ ...prev, [toolName]: true }));
+    }
+
     setMessages(prev => [...prev, {
       role: 'system',
       content: `Executing ${toolName}...`,
@@ -94,6 +121,20 @@ const GoogleCodeDemo = () => {
         status: 'running'
       }
     }]);
+
+    // Simulate tool execution
+    setTimeout(() => {
+      setMessages(prev => [...prev, {
+        role: 'system',
+        content: `${toolName} completed successfully`,
+        metadata: {
+          type: 'tool',
+          tool: toolName,
+          args,
+          status: 'complete'
+        }
+      }]);
+    }, 1000);
   };
 
   const handleSend = () => {
