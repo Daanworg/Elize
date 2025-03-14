@@ -1,0 +1,2 @@
+DROP DATABASE your_database_name;
+CREATE DATABASE your_database_name;
